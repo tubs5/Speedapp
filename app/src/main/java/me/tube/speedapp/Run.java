@@ -32,9 +32,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class Run extends AppCompatActivity {
     private Location l = null;
@@ -67,7 +70,6 @@ public class Run extends AppCompatActivity {
             return;
         }
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 50, ll);
-        //startService(new Intent(this.getApplicationContext(),Speedcalc.class));
     }
     LocationListener ll = new LocationListener() {
         @Override
@@ -105,7 +107,9 @@ public class Run extends AppCompatActivity {
     }
     private void save(){
         File f = getFilesDir();
-        f = new File(f.getAbsoluteFile() + "/"+new Date(System.currentTimeMillis()).toString());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss", Locale.getDefault());
+        Calendar c = Calendar.getInstance();
+        f = new File(f.getAbsoluteFile() + "/"+ sdf.format(c.getTime()));
         try {
             if (!f.createNewFile()) {
                 System.out.println("Failed to create file");
