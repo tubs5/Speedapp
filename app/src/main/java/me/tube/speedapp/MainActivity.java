@@ -37,14 +37,18 @@ public class MainActivity extends AppCompatActivity {
         ListView lw = (ListView) findViewById(R.id.listView);
          ArrayList<String> files = new ArrayList<>();
         for (String s : f.list()) {
-            if(!s.contains("rList")) files.add(s);
+            if(!s.contains("rList")){
+                if(!s.contains("instant-run")){
+                    files.add(s);
+                }
+            }
         }
         lw.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_list_item_1, files));
         final ArrayList<String> filesfinal = files;
         lw.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-               File File2 = new File(f.getAbsolutePath()+"/"+filesfinal.get(i));
+               File File2 = new File(f.getAbsoluteFile()+"/"+filesfinal.get(i));
                 System.out.println(File2.toString());
                 try {
                     Scanner s = new Scanner(File2);
@@ -56,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
                         System.out.println(full);
                         Intent intent = new Intent(view.getContext(),RevData.class);
                         intent.putExtra("file",full);
+                        intent.putExtra("path",File2.toString());
                         view.getContext().startActivity(intent);
                     }else Toast.makeText(view.getContext(),"cant load file",Toast.LENGTH_LONG).show();
 
