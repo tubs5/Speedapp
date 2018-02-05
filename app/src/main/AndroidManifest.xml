@@ -5,6 +5,11 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,20 +24,30 @@
             </intent-filter>
         </activity>
         <activity android:name=".Run" />
-        <activity android:name=".RevData"></activity>
-
+        <activity android:name=".RevData" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="me.tubes.Speedapp"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/filepaths" />
         </provider>
-        <service android:name=".SpeedServices"
-            android:exported="false"/>
+
+        <service
+            android:name=".SpeedServices"
+            android:exported="false" />
+
+        <activity
+            android:name=".Login.LoginActivity"
+            android:label="@string/title_activity_login" />
+
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
     </application>
 
 </manifest>

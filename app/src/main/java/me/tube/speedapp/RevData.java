@@ -3,10 +3,9 @@ package me.tube.speedapp;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Parcelable;
+import android.os.Bundle;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -23,22 +22,16 @@ import com.jjoe64.graphview.series.LineGraphSeries;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.CreationHelper;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InterruptedIOException;
-import java.security.Permission;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
-import java.util.jar.Manifest;
 
 public class RevData extends AppCompatActivity {
 
@@ -81,17 +74,20 @@ public class RevData extends AppCompatActivity {
                 if(checkCallingOrSelfPermission(android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
                     requestPermissions(perms,5);
                 }
+                try {
+                    File f = CreateExelDoc(path, ja2, view.getContext().getCacheDir());
+                    Intent shareIntent = new Intent();
+                    shareIntent.setAction(Intent.ACTION_SEND);
+                    System.out.println(f.getAbsoluteFile());
+                    Uri uri = FileProvider.getUriForFile(getApplicationContext(), "me.tubes.Speedapp", f);
+                    System.out.println(uri.toString());
+                    shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                    shareIntent.setType("application/vnd.google-apps.spreadsheet");
 
-                File f = CreateExelDoc(path, ja2,view.getContext().getCacheDir());
-                Intent shareIntent = new Intent();
-                shareIntent.setAction(Intent.ACTION_SEND);
-                System.out.println(f.getAbsoluteFile());
-                Uri uri = FileProvider.getUriForFile(getApplicationContext(),"me.tubes.Speedapp",f);
-                System.out.println(uri.toString());
-                shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
-                shareIntent.setType("application/vnd.google-apps.spreadsheet");
-
-                startActivity(Intent.createChooser(shareIntent, "Choose app to show in"));
+                    startActivity(Intent.createChooser(shareIntent, "Choose app to show in"));
+                } catch (NoClassDefFoundError e) {
+                    Toast.makeText(view.getContext(), e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -128,6 +124,7 @@ public class RevData extends AppCompatActivity {
         }
         return File;
     }
+
 
     private void GraphViewPopulation(JsonArray ja, GraphView gv) {
         try {
